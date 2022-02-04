@@ -1,11 +1,54 @@
-library(dplyr)
-library(purrr)
-library(ggplot2)
-library(gplots)
-library(ggpubr)
-library(colorRamps)
-library(readxl)
-
+#' Analyze IPA output
+#'
+#' @param ipa_input_file A string indicating the file location of IPA input gene list
+#' @param expression_matrix_file A string indicating the file location of the expression matrix file
+#' @param pathway_file A string indicating the file location of IPA output pathway .xls file
+#' @param sample_list A vector indicating columns in the expression matrix that the user wants to keep
+#' @param sample_names A vector indicating the user-imposed column names
+#' @param group_names A vector indicating the grouping of the samples
+#' @param pathway_header A boolean value specifying wether the IPA output pathway .xls file has a meta header
+#' @return The sum of \code{x} and \code{y}
+#' @examples
+#' IPA_PostHoc(
+#' ipa_input_file = "mint_flavor.csv",
+#' expression_matrix_file = "ecig_count_matrix",
+#' pathway_file = "mint_flavor_pathway.xls",
+#'
+#' sample_list = c(
+#'   "Air_JUUL_1Month_noLPS_Female_S1.results",
+#'   "Air_JUUL_1Month_noLPS_Female_S2.results",
+#'   "Air_JUUL_1Month_noLPS_Female_S3.results",
+#'   "Air_JUUL_1Month_noLPS_Female_S4.results",
+#'   "MintJUUL_JUUL_1Month_noLPS_Female_S1.results",
+#'   "MintJUUL_JUUL_1Month_noLPS_Female_S2.results",
+#'   "MintJUUL_JUUL_1Month_noLPS_Female_S3.results",
+#'   "MintJUUL_JUUL_1Month_noLPS_Female_S4.results"
+#' ),
+#'
+#' sample_names = c(
+#'   "Air1",
+#'   "Air2",
+#'   "Air3",
+#'   "Air4",
+#'   "Mint1",
+#'   "Mint2",
+#'   "Mint3",
+#'   "Mint4"
+#' ),
+#'
+#' group_names = c(
+#'   "Air",
+#'   "Air",
+#'   "Air",
+#'   "Air",
+#'   "Mint",
+#'   "Mint",
+#'   "Mint",
+#'   "Mint"
+#' ),
+#'
+#' pathway_header = TRUE
+#' )
 
 IPA_PostHoc = function(
 
@@ -222,5 +265,4 @@ IPA_PostHoc = function(
 
 }
 
-mint_flavor = analyse_ipa_result()
 
