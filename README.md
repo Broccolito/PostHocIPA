@@ -11,7 +11,8 @@ The goal of PostHocIPA is to further analyze output files from Ingenuity Pathway
 You can install the development version of PostHocIPA like so:
 
 ``` r
-
+library(devtools)
+install_github("Broccolito/PostHocIPA")
 ```
 
 ## Example
