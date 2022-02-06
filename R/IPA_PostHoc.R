@@ -210,15 +210,16 @@ IPA_PostHoc = function(
               axis.text.x = element_text(angle = 45,hjust = 1),
               text = element_text(size = 15),
               legend.position="top")
+      graphics.off()
       return(plt)
 
     }else{
       pathway_df$pathway = pathway_name
       pathway_df = pathway_df %>%
         select(pathway, symbol:FDR, everything())
+      graphics.off()
       return(pathway_df)
     }
-
   }
 
   # Plotting heatmaps for all pathways
