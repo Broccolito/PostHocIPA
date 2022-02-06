@@ -48,7 +48,8 @@
 #'
 #' pathway_header = TRUE
 #' )
-#' #' @export
+#' @export IPA_PostHoc
+
 IPA_PostHoc = function(
 
   ipa_input_file = "mint_flavor.csv",

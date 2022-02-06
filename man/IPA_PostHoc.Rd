@@ -79,5 +79,4 @@ group_names = c(
 
 pathway_header = TRUE
 )
-#' @export
 }
