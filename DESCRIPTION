@@ -9,7 +9,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Suggests: 
+Imports: 
     colorRamps,
     dplyr,
     ggplot2,
