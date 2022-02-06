@@ -35,9 +35,6 @@ IPA_PostHoc(
 
 \item{pathway_header}{A boolean value specifying wether the IPA output pathway .xls file has a meta header}
 }
-\value{
-The sum of \code{x} and \code{y}
-}
 \description{
 Analyze IPA output
 }

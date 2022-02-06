@@ -7,7 +7,6 @@
 #' @param sample_names A vector indicating the user-imposed column names
 #' @param group_names A vector indicating the grouping of the samples
 #' @param pathway_header A boolean value specifying wether the IPA output pathway .xls file has a meta header
-#' @return The sum of \code{x} and \code{y}
 #' @examples
 #' IPA_PostHoc(
 #' ipa_input_file = "mint_flavor.csv",
