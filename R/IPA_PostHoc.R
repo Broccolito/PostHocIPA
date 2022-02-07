@@ -146,80 +146,83 @@ IPA_PostHoc = function(
 
   # Define heatmap plotting function
   make_heatmap = function(pathway_df, pathway_name){
+    try({
 
-    cat(paste0("Making heatmap for ", pathway_name, "...\n"))
-    x11()
+      cat(paste0("Making heatmap for ", pathway_name, "...\n"))
+      x11()
 
-    if(dim(pathway_df)[1]>=2){
-      logcounts = pathway_df
-      gene_symbol = logcounts$symbol
-      logcounts = logcounts %>%
-        select(-(symbol:FDR))
-      row_mean = apply(logcounts, MARGIN = 1, mean)
-      row_sd = apply(logcounts, MARGIN = 1, sd)
+      if(dim(pathway_df)[1]>=2){
+        logcounts = pathway_df
+        gene_symbol = logcounts$symbol
+        logcounts = logcounts %>%
+          select(-(symbol:FDR))
+        row_mean = apply(logcounts, MARGIN = 1, mean)
+        row_sd = apply(logcounts, MARGIN = 1, sd)
 
-      logcounts_zscore = vector()
-      for(i in 1:dim(logcounts)[1]){
-        row_zscore = (logcounts[i,] - row_mean[i]) / row_sd[i]
-        logcounts_zscore = rbind(logcounts_zscore, row_zscore)
-      }
-      logcounts_zscore = data.frame(logcounts_zscore)
-      logcounts_zscore$gene_name = gene_symbol
-      logcounts_zscore$row_mean = row_mean
-      logcounts_zscore$row_sd = row_sd
-      logcounts_zscore = logcounts_zscore %>%
-        select(gene_name, row_mean, row_sd, everything())
-
-      heatmap_source_matrix = logcounts_zscore %>%
-        select(-(gene_name:row_sd)) %>%
-        as.matrix()
-      rownames(heatmap_source_matrix) = logcounts_zscore$gene_name
-      heatmap_object = heatmap.2(heatmap_source_matrix, Colv = FALSE, Rowv = TRUE,
-                                 col = "green2red", trace = "none")
-      heatmap_source_matrix = heatmap_object$carpet
-      heatmap_source_matrix = t(heatmap_source_matrix)
-      heatmap_source_matrix = heatmap_source_matrix %>%
-        as.data.frame() %>%
-        mutate(gene_names = rownames(heatmap_source_matrix)) %>%
-        select(gene_names, everything())
-      rownames(heatmap_source_matrix) = NULL
-
-      names(heatmap_source_matrix) = sample_names
-
-      heatmap_source_processed = vector()
-      for(j in 1:(dim(heatmap_source_matrix)[2]-1)){
-        for(i in 1:dim(heatmap_source_matrix)[1]){
-          heatmap_source_fragment = tibble(gene_names = heatmap_source_matrix[i,1],
-                                           sample = names(heatmap_source_matrix)[j+1],
-                                           intensity = heatmap_source_matrix[i,j+1])
-          heatmap_source_processed = rbind.data.frame(heatmap_source_processed,
-                                                      heatmap_source_fragment)
+        logcounts_zscore = vector()
+        for(i in 1:dim(logcounts)[1]){
+          row_zscore = (logcounts[i,] - row_mean[i]) / row_sd[i]
+          logcounts_zscore = rbind(logcounts_zscore, row_zscore)
         }
+        logcounts_zscore = data.frame(logcounts_zscore)
+        logcounts_zscore$gene_name = gene_symbol
+        logcounts_zscore$row_mean = row_mean
+        logcounts_zscore$row_sd = row_sd
+        logcounts_zscore = logcounts_zscore %>%
+          select(gene_name, row_mean, row_sd, everything())
+
+        heatmap_source_matrix = logcounts_zscore %>%
+          select(-(gene_name:row_sd)) %>%
+          as.matrix()
+        rownames(heatmap_source_matrix) = logcounts_zscore$gene_name
+        heatmap_object = heatmap.2(heatmap_source_matrix, Colv = FALSE, Rowv = TRUE,
+                                   col = "green2red", trace = "none")
+        heatmap_source_matrix = heatmap_object$carpet
+        heatmap_source_matrix = t(heatmap_source_matrix)
+        heatmap_source_matrix = heatmap_source_matrix %>%
+          as.data.frame() %>%
+          mutate(gene_names = rownames(heatmap_source_matrix)) %>%
+          select(gene_names, everything())
+        rownames(heatmap_source_matrix) = NULL
+
+        names(heatmap_source_matrix) = sample_names
+
+        heatmap_source_processed = vector()
+        for(j in 1:(dim(heatmap_source_matrix)[2]-1)){
+          for(i in 1:dim(heatmap_source_matrix)[1]){
+            heatmap_source_fragment = tibble(gene_names = heatmap_source_matrix[i,1],
+                                             sample = names(heatmap_source_matrix)[j+1],
+                                             intensity = heatmap_source_matrix[i,j+1])
+            heatmap_source_processed = rbind.data.frame(heatmap_source_processed,
+                                                        heatmap_source_fragment)
+          }
+        }
+
+        plt = ggplot(data = heatmap_source_processed,
+                     aes(x = sample, y = gene_names, fill = intensity)) +
+          geom_tile() +
+          scale_fill_gradient2(low="green",mid = "black", high="red",midpoint = 0) +
+          ylab("") +
+          xlab("") +
+          labs(fill = "Corrected Z-Score:  ") +
+          ggtitle(label = NULL, subtitle = pathway_name) +
+          theme_pubclean() +
+          theme(axis.text.y=element_text(face="italic"),
+                axis.text.x = element_text(angle = 45,hjust = 1),
+                text = element_text(size = 15),
+                legend.position="top")
+        graphics.off()
+        return(plt)
+
+      }else{
+        pathway_df$pathway = pathway_name
+        pathway_df = pathway_df %>%
+          select(pathway, symbol:FDR, everything())
+        graphics.off()
+        return(pathway_df)
       }
-
-      plt = ggplot(data = heatmap_source_processed,
-                   aes(x = sample, y = gene_names, fill = intensity)) +
-        geom_tile() +
-        scale_fill_gradient2(low="green",mid = "black", high="red",midpoint = 0) +
-        ylab("") +
-        xlab("") +
-        labs(fill = "Corrected Z-Score:  ") +
-        ggtitle(label = NULL, subtitle = pathway_name) +
-        theme_pubclean() +
-        theme(axis.text.y=element_text(face="italic"),
-              axis.text.x = element_text(angle = 45,hjust = 1),
-              text = element_text(size = 15),
-              legend.position="top")
-      graphics.off()
-      return(plt)
-
-    }else{
-      pathway_df$pathway = pathway_name
-      pathway_df = pathway_df %>%
-        select(pathway, symbol:FDR, everything())
-      graphics.off()
-      return(pathway_df)
-    }
+    })
+    return(NA)
   }
 
   # Plotting heatmaps for all pathways
