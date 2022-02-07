@@ -149,7 +149,7 @@ IPA_PostHoc = function(
     try({
 
       cat(paste0("Making heatmap for ", pathway_name, "...\n"))
-      x11()
+      # x11()
 
       if(dim(pathway_df)[1]>=2){
         logcounts = pathway_df
@@ -211,7 +211,7 @@ IPA_PostHoc = function(
                 axis.text.x = element_text(angle = 45,hjust = 1),
                 text = element_text(size = 15),
                 legend.position="top")
-        graphics.off()
+        # graphics.off()
         return(plt)
 
       }else{
