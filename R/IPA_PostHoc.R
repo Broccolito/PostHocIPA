@@ -221,7 +221,7 @@ IPA_PostHoc = function(
         graphics.off()
         return(pathway_df)
       }
-    })
+    }, silent = TRUE)
     return(NA)
   }
 
@@ -240,24 +240,29 @@ IPA_PostHoc = function(
     filter(FDR <= 0.05) %>%
     split(.$symbol) %>%
     map(function(x){
-      gene_expression = unlist(select(x, -(gene_name:symbol)))
-      gene_name = x$symbol
-      d = tibble(group_names, gene_expression)
-      ggplot(data = d, aes(x = group_names, y = gene_expression)) +
-        geom_boxplot(outlier.shape = NA) +
-        geom_point(aes(fill = group_names), color = "black", shape = 21, size = 3) +
-        labs(fill = "") +
-        xlab("") +
-        ylab("Relative Expression") +
-        ggtitle(label = gene_name) +
-        stat_compare_means(method = "t.test",
-                           comparisons = list(unique(group_names)),
-                           symnum.args = list(cutpoints = c(0, 1),
-                                              symbols = c("*")),
-                           size = 5) +
-        theme_pubr() +
-        theme(text = element_text(size = 15),
-              plot.title = element_text(face = "italic"))
+      try({
+        cat(paste0("Making Heatmap for ", x$symbol, "...\n"))
+        gene_expression = unlist(select(x, -(gene_name:symbol)))
+        gene_name = x$symbol
+        d = tibble(group_names, gene_expression)
+        plt = ggplot(data = d, aes(x = group_names, y = gene_expression)) +
+          geom_boxplot(outlier.shape = NA) +
+          geom_point(aes(fill = group_names), color = "black", shape = 21, size = 3) +
+          labs(fill = "") +
+          xlab("") +
+          ylab("Relative Expression") +
+          ggtitle(label = gene_name) +
+          stat_compare_means(method = "t.test",
+                             comparisons = list(unique(group_names)),
+                             symnum.args = list(cutpoints = c(0, 1),
+                                                symbols = c("*")),
+                             size = 5) +
+          theme_pubr() +
+          theme(text = element_text(size = 15),
+                plot.title = element_text(face = "italic"))
+        return(plt)
+      }, silent = TRUE)
+      return(TRUE)
     })
 
   result = list(
