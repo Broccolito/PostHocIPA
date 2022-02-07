@@ -262,7 +262,7 @@ IPA_PostHoc = function(
                 plot.title = element_text(face = "italic"))
         return(plt)
       }, silent = TRUE)
-      return(TRUE)
+      return(NA)
     })
 
   result = list(
